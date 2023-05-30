@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Bar, BarChart, Cell, Pie, PieChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Cell, Label, Pie, PieChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { api } from "~/utils/api";
 
@@ -52,8 +52,12 @@ export default function Page() {
             <div className="flex flex-row justify-center w-full h-full space-x-10">
                 <ResponsiveContainer width={500} height={400}>
                     <BarChart data={dataBar} width={400} height={300} >
-                        <XAxis dataKey="name" />
-                        <YAxis />
+                        <XAxis dataKey="name">
+                            <Label value="Task number" position="insideBottom" offset={-5} />
+                        </XAxis>
+                        <YAxis>
+                            <Label value="Days" position="insideLeft" offset={-6} />
+                        </YAxis>
                         <ReferenceLine y={0} stroke="#fff" />
                         <Tooltip />
                         <Bar dataKey='remaining' fill='#40db3d' />

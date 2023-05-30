@@ -117,7 +117,7 @@ function ListItem(props: {task: Task, id: string}) {
                 <div onDoubleClick={() => {setEditing(true)}}>
                     <input
                         ref={descRef}
-                        className="disabled:bg-white/50 w-80"
+                        className="disabled:bg-white/50 w-80 p-1 rounded-sm"
                         type='text'
                         disabled={!editing}
                         autoFocus={editing}
@@ -222,8 +222,8 @@ export default function Page() {
         ? 'Loading...'
         : tasks.data === null ? 'Invalid todolist ID'
         : <>
-        <div className="flex flex-col items-center -mt-4 text-xl font-bold text-teal-400 hover:text-teal-200">
-            <Link href={`/${id}/charts`} className="inline-flex gap-x-2">
+        <div className="flex flex-col items-center -mt-4">
+            <Link href={`/${id}/charts`} className="inline-flex gap-x-2 text-xl font-bold text-teal-400 hover:text-teal-200">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
   <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z" />
 </svg>
@@ -250,7 +250,7 @@ export default function Page() {
                 className="mb-2 py-1 px-2 border rounded-md bg-slate-800 hover:bg-black">
                     Create new task
             </button>
-            <div className="border border-white rounded-md h-[29rem] overflow-y-scroll">
+            <div className="border border-white rounded-md h-[580px] min-[1200px]:h-[29rem] overflow-y-scroll">
                 <table className={`text-black border-collapse border ${style.table as string}`}>
                     <thead className="text-white">
                         <tr className=" p-10">
