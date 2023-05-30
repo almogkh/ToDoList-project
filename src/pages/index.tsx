@@ -13,7 +13,7 @@ const Home: NextPage = () => {
     if (mut.isLoading)
       return
     const id = (await mut.mutateAsync()).id
-    router.push(`/${id}`)
+    void router.push(`/${id}`)
   }
 
   return (
@@ -27,10 +27,10 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8 max-w-4xl">
           <div
             className="flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 cursor-pointer"
-            onClick={handleCreate}>
+            onClick={() => void handleCreate()}>
             <h3 className="text-2xl font-bold">Create a new ToDo list</h3>
             <div className="text-lg">
-              If you don't have any ToDo lists yet or you want to create a new one
+              If you don&apos;t have any ToDo lists yet or you want to create a new one
             </div>
           </div>
           <div
@@ -47,12 +47,12 @@ const Home: NextPage = () => {
                   onChange={(e) => setExistingId(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter')
-                      router.push(`/${existingId}`)
+                      void router.push(`/${existingId}`)
                   }} />
                 <button
                   className="border border-white bg-slate-800 hover:bg-black disabled:bg-slate-800 py-1 px-3"
                   disabled={existingId === ''}
-                  onClick={() => router.push(`/${existingId}`)}>
+                  onClick={() => void router.push(`/${existingId}`)}>
                     Open
                 </button>
               </div>

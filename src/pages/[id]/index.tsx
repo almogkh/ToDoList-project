@@ -1,4 +1,4 @@
-import { Task } from "@prisma/client";
+import { type Task } from "@prisma/client";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { useState, useRef, useEffect } from "react";
@@ -19,7 +19,7 @@ function ListItem(props: {task: Task, id: string}) {
     const [priority, setPriority] = useState(task.priority)
     const [editing, setEditing] = useState(false)
 
-    const descRef = useRef<any>(null)
+    const descRef = useRef<HTMLInputElement>(null)
 
     const utils = api.useContext()
 
@@ -42,8 +42,8 @@ function ListItem(props: {task: Task, id: string}) {
         onError(err, vars, ctx) {
             utils.todolist.getTasks.setData(id, ctx)
         },
-        onSettled() {
-            utils.todolist.getTasks.invalidate(id)
+        async onSettled() {
+            await utils.todolist.getTasks.invalidate(id)
         }
     })
     const deleteTask = api.todolist.deleteTask.useMutation({
@@ -59,8 +59,8 @@ function ListItem(props: {task: Task, id: string}) {
         onError(err, vars, ctx) {
             utils.todolist.getTasks.setData(id, ctx)
         },
-        onSettled() {
-            utils.todolist.getTasks.invalidate(id)
+        async onSettled() {
+            await utils.todolist.getTasks.invalidate(id)
         }
     })
 
@@ -68,7 +68,7 @@ function ListItem(props: {task: Task, id: string}) {
         function handleClick(e: MouseEvent) {
             if (!editing)
                 return
-            if (descRef.current && !descRef.current.contains(e.target)) {
+            if (descRef.current && !descRef.current.contains(e.target as Node)) {
                 setEditing(false)
                 const desc = descRef.current.value
                 setDescription(desc)
@@ -77,9 +77,9 @@ function ListItem(props: {task: Task, id: string}) {
         }
         document.addEventListener('mousedown', handleClick)
         if (editing)
-            descRef.current.focus()
+            descRef.current?.focus()
         return () => {document.removeEventListener('mousedown', handleClick)}
-    }, [editing])
+    }, [editing, editTask, task.id])
 
     return (
         <tr>
@@ -176,12 +176,12 @@ export default function Page() {
     const [dialogShowing, setDialogShowing] = useState(false)
 
     const list = useRef<HTMLTableSectionElement>(null)
-    const dialogRef = useRef<any>(null)
-    const innerDiv = useRef<any>(null)
+    const dialogRef = useRef<HTMLDialogElement>(null)
+    const innerDiv = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         function handleClick(e: MouseEvent) {
-            if (!innerDiv.current?.contains(e.target))
+            if (!innerDiv.current?.contains(e.target as Node))
                 setDialogShowing(false)
         }
         if (dialogShowing) {
@@ -251,7 +251,7 @@ export default function Page() {
                     Create new task
             </button>
             <div className="border border-white rounded-md h-[29rem] overflow-y-scroll">
-                <table className={`text-black border-collapse border ${style.table}`}>
+                <table className={`text-black border-collapse border ${style.table as string}`}>
                     <thead className="text-white">
                         <tr className=" p-10">
                             <th>Completed</th>

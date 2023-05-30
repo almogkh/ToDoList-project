@@ -12,10 +12,10 @@ export default function Page() {
     const tasks = api.todolist.getTasks.useQuery(id)
     const dataBar = tasks.data?.tasks
         .filter((task) => !task.completed)
-        .map((task, idx) => {
+        .map((task, idx: number) => {
         let diff = task.dueDate.getTime() - new Date().getTime()
         diff = Number((diff / (1000 * 60 * 60 * 24)).toFixed(0))
-        const data = {name: '' + idx, value: diff, desc: task.description}
+        const data = {name: idx.toString(), value: diff, desc: task.description}
         if (diff >= 0)
             return {...data, remaining: diff}
         else
@@ -28,12 +28,12 @@ export default function Page() {
     ]
     if (tasks.data) {
         for (const task of tasks.data?.tasks) {
-            if (task.completed)
-                dataPie[0]!.value += 1
-            else if (task.dueDate.getTime() < new Date().getTime())
-                dataPie[1]!.value += 1
-            else
-                dataPie[2]!.value += 1
+            if (task.completed && dataPie[0])
+                dataPie[0].value += 1
+            else if (task.dueDate.getTime() < new Date().getTime() && dataPie[1])
+                dataPie[1].value += 1
+            else if (dataPie[2])
+                dataPie[2].value += 1
         }
     }
 
