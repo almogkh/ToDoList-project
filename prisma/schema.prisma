@@ -20,10 +20,10 @@ model Task {
     id          String   @id @default(auto()) @map("_id") @db.ObjectId
     TodoList    TodoList @relation(fields: [todoListId], references: [id])
     createdAt   DateTime @default(now())
-    dueDate     DateTime
+    dueDate     DateTime @default(now())
     completed   Boolean  @default(false)
-    description String
-    priority    Priority
+    description String   @default("")
+    priority    Priority @default(MEDIUM)
     todoListId  String   @db.ObjectId
 }
 

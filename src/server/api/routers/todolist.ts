@@ -12,14 +12,31 @@ export const todolistRouter = createTRPCRouter({
     }),
   getTasks: publicProcedure
   .input(z.string())
-  .query(({ ctx, input }) => {
-    return ctx.prisma.todoList.findUnique({
-      where: {
-        id: input,
-      },
-      include: {
-        tasks: true,
-      },
+  .query(async ({ ctx, input }) => {
+    try {
+      return await ctx.prisma.todoList.findUnique({
+        where: {
+          id: input,
+        },
+        include: {
+          tasks: true,
+        },
+      })
+    } catch {
+      return null
+    }
+  }),
+  createTask: publicProcedure
+  .input(z.string())
+  .mutation(async ({ctx, input}) => {
+    return await ctx.prisma.task.create({
+      data: {
+        TodoList: {
+          connect: {
+            id: input
+          }
+        }
+      }
     })
   }),
   editTask: publicProcedure
