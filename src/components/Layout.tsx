@@ -1,12 +1,13 @@
+import Link from 'next/link'
 import React from 'react'
 
 export default function Layout({children}: React.PropsWithChildren) {
     return (
-        <div className="flex flex-col flex-nowrap items-center min-h-screen overflow-hidden text-white bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-            <header className="mt-3 mb-12">
-                <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
+        <div className="relative flex flex-col flex-nowrap items-center min-h-screen overflow-hidden text-white bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+            <header className="mt-2 mb-12">
+                <Link href="/" className="text-6xl font-extrabold tracking-tight text-white">
                     ToDo List
-                </h1>
+                </Link>
             </header>
 
             <main className="flex-1">

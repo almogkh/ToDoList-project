@@ -6,7 +6,6 @@ import { useState } from "react"
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
-  //const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const mut = api.todolist.createTodolist.useMutation();
   const router = useRouter()
   const [existingId, setExistingId] = useState('')
@@ -60,9 +59,6 @@ const Home: NextPage = () => {
             </div>
           </div>
         </div>
-        <p className="text-2xl text-white">
-          {/*hello.data ? hello.data.greeting : "Loading tRPC query..."*/}
-        </p>
       </div>
     </>
   );
