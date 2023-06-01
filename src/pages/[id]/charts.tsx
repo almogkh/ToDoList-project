@@ -15,7 +15,7 @@ export default function Page() {
         .map((task, idx: number) => {
         let diff = task.dueDate.getTime() - new Date().getTime()
         diff = Number((diff / (1000 * 60 * 60 * 24)).toFixed(0))
-        const data = {name: idx.toString(), value: diff, desc: task.description}
+        const data = {name: (idx + 1).toString(), value: diff, desc: task.description}
         if (diff >= 0)
             return {...data, remaining: diff}
         else
@@ -52,11 +52,11 @@ export default function Page() {
             <div className="flex flex-row justify-center w-full h-full space-x-10">
                 <ResponsiveContainer width={500} height={400}>
                     <BarChart data={dataBar} width={400} height={300} >
-                        <XAxis dataKey="name">
-                            <Label value="Task number" position="insideBottom" offset={-5} />
+                        <XAxis dataKey="name" stroke="white">
+                            <Label value="Task number" position="insideBottom" offset={-5} stroke="white" />
                         </XAxis>
-                        <YAxis>
-                            <Label value="Days" position="insideLeft" offset={-6} />
+                        <YAxis stroke="white">
+                            <Label value="Days" position="insideLeft" offset={-6} stroke="white"  />
                         </YAxis>
                         <ReferenceLine y={0} stroke="#fff" />
                         <Tooltip />
@@ -65,22 +65,25 @@ export default function Page() {
                     </BarChart>
                 </ResponsiveContainer>
 
-                <ResponsiveContainer width={400} height={400}>
-                    <PieChart width={400} height={400}>
-                        <Pie
-                            dataKey="value"
-                            data={dataPie}
-                            label>
-                                {dataPie.map((entry, idx) => 
-                                    <Cell key={`cell-${idx}`} fill={entry.name === 'Completed'
-                                                                                    ? "#42d93d"
-                                                                                    : entry.name === "Overdue" 
-                                                                                        ? "#d93d3f"
-                                                                                        : "#cfcc17"} />)}
-                        </Pie>
-                        <Tooltip />
-                    </PieChart>
-                </ResponsiveContainer>
+                <div className="flex flex-col gap-4 items-center">
+                    <span className="text-lg">Task evaluation</span>
+                    <ResponsiveContainer width={400} height={400}>
+                        <PieChart width={400} height={400}>
+                            <Pie
+                                dataKey="value"
+                                data={dataPie}
+                                label>
+                                    {dataPie.map((entry, idx) => 
+                                        <Cell key={`cell-${idx}`} fill={entry.name === 'Completed'
+                                                                                        ? "#42d93d"
+                                                                                        : entry.name === "Overdue" 
+                                                                                            ? "#d93d3f"
+                                                                                            : "#cfcc17"} />)}
+                            </Pie>
+                            <Tooltip />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
             </div>
         </div>
         </>

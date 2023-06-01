@@ -10,6 +10,20 @@ export const todolistRouter = createTRPCRouter({
         id: todolist.id,
       };
     }),
+  deleteTodolist: publicProcedure
+    .input(z.string())
+    .mutation(({ ctx, input }) => {
+      void ctx.prisma.task.deleteMany({
+        where: {
+          todoListId: input,
+        }
+      })
+      void ctx.prisma.todoList.delete({
+        where: {
+          id: input,
+        },
+      })
+    }),
   getTasks: publicProcedure
   .input(z.string())
   .query(async ({ ctx, input }) => {
@@ -68,5 +82,16 @@ export const todolistRouter = createTRPCRouter({
           }
         })
         return todo
-      })
+      }),
+      deleteAllTasks: publicProcedure
+        .input(z.string())
+        .mutation(async ({ ctx, input }) => {
+          const todo = await ctx.prisma.task.deleteMany({
+            where: {
+              todoListId: input,
+            },
+          })
+
+          return todo
+        })
 })
