@@ -26,7 +26,7 @@ const Home: NextPage = () => {
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8 max-w-4xl">
           <div
-            className="flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 cursor-pointer"
+            className="flex flex-col gap-4 rounded-xl bg-white/10 p-4 dark:text-white hover:bg-white/20 cursor-pointer"
             onClick={() => void handleCreate()}>
             <h3 className="text-2xl font-bold">Create a new ToDo list</h3>
             <div className="text-lg">
@@ -34,7 +34,7 @@ const Home: NextPage = () => {
             </div>
           </div>
           <div
-            className="flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
+            className="flex flex-col gap-4 rounded-xl bg-white/10 p-4 dark:text-white hover:bg-white/20">
             <h3 className="text-2xl font-bold">Existing ToDo list</h3>
             <div className="text-lg flex flex-col">
               Open an existing ToDo list by opening your saved URL or enter your ToDo list ID<br />
@@ -50,7 +50,7 @@ const Home: NextPage = () => {
                       void router.push(`/${existingId}`)
                   }} />
                 <button
-                  className="border border-white bg-slate-800 hover:bg-black disabled:bg-slate-800 py-1 px-3"
+                  className="border border-white bg-slate-300 dark:bg-slate-800 hover:bg-slate-500 dark:hover:bg-black disabled:bg-slate-300 dark:disabled:bg-slate-800 py-1 px-3"
                   disabled={existingId === ''}
                   onClick={() => void router.push(`/${existingId}`)}>
                     Open
