@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+td, th {
+    @apply border-b lg:border border-black dark:border-white py-1 px-1 md:px-3 text-center text-sm lg:text-base;
+}
+
+.dark {
+    color-scheme: dark;
+}

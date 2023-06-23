@@ -1,9 +1,11 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useContext, useEffect } from "react";
 import { Bar, BarChart, Cell, Label, Pie, PieChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { api } from "~/utils/api";
+import { LayoutContext } from "~/utils/contexts";
 
 export default function Page() {
   const router = useRouter()
@@ -37,6 +39,22 @@ export default function Page() {
     }
   }
 
+  const {setMobileMenuContent} = useContext(LayoutContext)
+  useEffect(() => {
+    if (!setMobileMenuContent) return
+    setMobileMenuContent((
+      <>
+        <li>
+          <Link href={`/${id}`} className="hover:text-sky-500 dark:hover:text-sky-400">Return to TodoList</Link>
+        </li>
+      </>
+    ))
+
+    return () => {
+      setMobileMenuContent(null)
+    }
+  }, [id, setMobileMenuContent])
+
   return (
     <>
       <Head>
@@ -45,12 +63,12 @@ export default function Page() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex flex-col items-center">
-        <Link href={`/${id}`} className="text-xl font-bold text-red-900 hover:text-red-800 dark:text-teal-400 dark:hover:text-teal-200">
+        <Link href={`/${id}`} className="hidden lg:inline text-xl font-bold text-red-900 hover:text-red-800 dark:text-teal-400 dark:hover:text-teal-200">
           Return to ToDo list
         </Link>
         <h2 className="text-3xl">ToDo list statistics</h2>
-        <div className="flex flex-row justify-center w-full h-full space-x-10">
-          <ResponsiveContainer width={500} height={400}>
+        <div className="flex flex-col lg:flex-row place-content-center mt-6 w-full h-full gap-20">
+          <ResponsiveContainer width={380} aspect={1}>
             <BarChart data={dataBar} width={400} height={300} >
               <XAxis dataKey="name" stroke="white">
                 <Label value="Task number" position="insideBottom" offset={-5} stroke="white" />
@@ -67,7 +85,7 @@ export default function Page() {
 
           <div className="flex flex-col gap-4 items-center">
             <span className="text-lg">Task evaluation</span>
-            <ResponsiveContainer width={400} height={400}>
+            <ResponsiveContainer width={380} aspect={1}>
               <PieChart width={400} height={400}>
                 <Pie
                   dataKey="value"
