@@ -10,7 +10,6 @@ export default function useCollapsable<T extends HTMLElement>(setter: Setter,): 
     const id = useId()
 
     useEffect(() => {
-        console.log(ref.current)
         const handler = {element: ref, setter, id}
         collapsables.push(handler)
 
