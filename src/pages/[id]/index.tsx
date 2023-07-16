@@ -8,9 +8,11 @@ import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import useCollapsable from "~/utils/use-collapsable";
 import { LayoutContext } from "~/utils/contexts";
+import { sortTaskList } from "~/utils/task_utils";
 
 type Priority = 'LOW' | 'MEDIUM' | 'HIGH'
 
+// An individual task in the task list
 function ListItem(props: { task: Task, id: string, index: number, editMobile: (a: string, b: Date, callback: (a: string, b: Date) => void) => void }) {
   const { task, id, index, editMobile } = props
 
@@ -67,6 +69,7 @@ function ListItem(props: { task: Task, id: string, index: number, editMobile: (a
     }
   })
 
+  // Allow confirming the description change by simply clicking outside the textbox
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (!editing)
@@ -133,7 +136,7 @@ function ListItem(props: { task: Task, id: string, index: number, editMobile: (a
         <div onDoubleClick={() => { setEditing(true) }}>
           <input
             ref={descRef}
-            className="border border-black dark:border-white disabled:bg-white/50 w-52 md:w-64 lg:w-80 p-1 rounded-sm"
+            className="border border-black dark:border-white disabled:bg-white/50 w-full md:w-64 lg:w-80 p-1 rounded-sm"
             type='text'
             disabled={!editing}
             autoFocus={editing}
@@ -153,12 +156,12 @@ function ListItem(props: { task: Task, id: string, index: number, editMobile: (a
           />
         </div>
       </td>
-      <td className="hidden md:table-cell">
+      <td className="hidden sm:table-cell">
         <span className="text-black dark:text-white">
           {task.createdAt.toISOString().slice(0, 10)}
         </span>
       </td>
-      <td className="hidden md:table-cell">
+      <td className="hidden sm:table-cell">
         <input
           type="date"
           className="text-black dark:text-white"
@@ -171,22 +174,24 @@ function ListItem(props: { task: Task, id: string, index: number, editMobile: (a
             editTask.mutate({ id: task.id, data: { dueDate } })
           }} />
       </td>
-      <td className="space-x-1 md:space-x-6 lg:space-x-0">
-        <button type="button" className="inline lg:hidden" onClick={() => editMobile(description, dueDate, callback)}>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-          </svg>
-        </button>
-        <button
-          className="dark:text-white lg:border border-black dark:border-white rounded-md lg:p-1 lg:bg-red-500 lg:hover:bg-red-600 lg:dark:bg-red-900 lg:dark:hover:bg-red-950"
-          onClick={() => {
-            deleteTask.mutate(task.id)
-          }}>
-          <span className="hidden lg:inline">Delete</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="lg:hidden w-6 h-6">
-            <path className="stroke-red-800 dark:stroke-red-500" strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+      <td>
+        <div className="flex flex-row space-x-1 md:space-x-6 lg:space-x-0">
+          <button type="button" className="inline lg:hidden" onClick={() => editMobile(description, dueDate, callback)}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+            </svg>
+          </button>
+          <button
+            className="dark:text-white lg:border border-black dark:border-white rounded-md lg:p-1 lg:bg-red-500 lg:hover:bg-red-600 lg:dark:bg-red-900 lg:dark:hover:bg-red-950"
+            onClick={() => {
+              deleteTask.mutate(task.id)
+            }}>
+            <span className="hidden lg:inline">Delete</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="lg:hidden w-6 h-6">
+              <path className="stroke-red-800 dark:stroke-red-500" strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
       </td>
     </tr>
   )
@@ -201,6 +206,8 @@ export default function Page() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [taskList, setTaskList] = useState(tasks.data)
   const [dialogShowing, setDialogShowing] = useState(false)
+  const [filterCompleted, setFilterCompleted] = useState(false)
+  const [sortOrder, setSortOrder] = useState("default")
   const [confirmationShowing, setConfirmationShowing] = useState(false)
   const setter = useCallback(() => {
     setDialogShowing(false)
@@ -275,6 +282,13 @@ export default function Page() {
     callbackRef.current = callback
   }, [])
 
+  let filteredTasks = tasks.data?.tasks
+  if (filterCompleted) {
+    filteredTasks = filteredTasks?.filter((task) => !task.completed)
+  }
+
+  const sortedTasks = sortTaskList(filteredTasks, sortOrder)
+
   return (
     <>
       <Head>
@@ -342,7 +356,7 @@ export default function Page() {
               </div>
             </div>)}
 
-            <div className="flex flex-col items-center lg:block mt-4">
+            <div className="flex flex-col w-[95vw] md:w-auto items-center lg:block mt-4">
               <dialog ref={dialog} className={`backdrop:backdrop-blur-[2px] p-0 rounded-md text-white border border-white ${confirmationShowing ? 'bg-transparent' : ''}`}>
                 <div ref={innerRef} data-collapsable={(dialogShowing || confirmationShowing) && 'open'}>
                   {dialogShowing && (
@@ -376,7 +390,7 @@ export default function Page() {
                   Get QR code
                 </button>
               </div>
-              <div className="flex space-x-8 lg:space-x-2 mb-2 pl-2 lg:pl-0 lg:ml-0 lg:mb-4 pb-3 w-11/12 lg:w-auto lg:pb-1 border-b border-black dark:border-white">
+              <div className="flex items-center space-x-8 lg:space-x-2 mb-2 pl-2 lg:pl-0 lg:ml-0 lg:mb-4 pb-3 w-11/12 lg:w-auto lg:pb-1 border-b border-black dark:border-white">
                 <button
                   onClick={() => createTask.mutate(id)}
                   className="lg:mb-2 lg:py-1 lg:px-2 lg:border border-black dark:border-white rounded-md lg:bg-slate-300 hover:bg-slate-500 lg:dark:bg-slate-800 dark:hover:bg-black">
@@ -402,6 +416,23 @@ export default function Page() {
                     <path className="stroke-red-800 dark:stroke-red-500" strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
+                <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row">
+                  <div className="ml-4">
+                    <div onClick={() => setFilterCompleted(!filterCompleted)}>
+                      <input className="mr-2" type="checkbox" checked={filterCompleted} />
+                      <label className="md:text-lg">Filter completed tasks</label>
+                    </div>
+                  </div>
+                  <div className="space-x-4">
+                    <label className="ml-4">Sort</label>
+                    <select onChange={(e) => setSortOrder(e.target.value)}>
+                      <option value="default">Default</option>
+                      <option value="priority">Priority</option>
+                      <option value="createDate">Creation Date</option>
+                      <option value="dueDate">Due Date</option>
+                    </select>
+                  </div>
+                </div>
               </div>
               <table className="text-black w-full lg:w-auto lg:ml-0 dark:text-white border-collapse lg:border">
                 <thead className="hidden lg:table-header-group">
@@ -416,7 +447,7 @@ export default function Page() {
                   </tr>
                 </thead>
                 <tbody ref={list}>
-                  {tasks.data?.tasks.map((task, idx) => (<ListItem key={task.id} task={task} id={id} index={idx + 1} editMobile={callback} />))}
+                  {sortedTasks?.map((task, idx) => (<ListItem key={task.id} task={task} id={id} index={idx + 1} editMobile={callback} />))}
                 </tbody>
               </table>
             </div>

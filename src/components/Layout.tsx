@@ -36,6 +36,7 @@ export default function Layout({ children }: React.PropsWithChildren) {
   const themeIcon = darkMode === 'light' ? sun :
     darkMode === 'dark' ? moon : auto
 
+  // Initialize the theme based on the user's preference (from local storage)
   useEffect(() => {
     let mode = ('theme' in localStorage) ? localStorage.theme as string : 'auto'
     const query = matchMedia('(prefers-color-scheme: dark)')
@@ -58,6 +59,7 @@ export default function Layout({ children }: React.PropsWithChildren) {
     }
   }, [])
 
+  // Collapse the side menu on page transitions
   useEffect(() => {
     const handleRouteChange = () => {
       setMobileShow(false)
